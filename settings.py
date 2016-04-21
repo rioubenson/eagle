@@ -15,7 +15,7 @@ ENVIRONMENTS = {
     }
 }
 
-CSV_DATA_DIR = os.environ.get('EAGLE_CSV_DATA_DIR', None)
+CSV_DATA_DIR = 'C:\os.environ.get('EAGLE_CSV_DATA_DIR', None)
 OUTPUT_RESULTS_DIR = os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
 
 DOMAIN = "sandbox"

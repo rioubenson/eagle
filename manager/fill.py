@@ -23,14 +23,14 @@ class FillManager(object):
         if instrument not in self.book.positions:
             self.book.add_new_position(
                 instrument,
-                positions_units
+                units,
+                price
             )
 
         # If a position exists add or remove units
         else:
-            if side == 'close_all':
+            if side == 'sell':
+                units = units * -1
                 # Close all positions
-                self.book.close_position(instrument)
-            else:
-                self.book.add_position_units(instrument, positions_units)
+            self.book.adjust_position(instrument, units, price)
 

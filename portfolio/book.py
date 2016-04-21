@@ -51,7 +51,7 @@ class Book(object):
         )
         self.positions[instrument] = ps
 
-    def adjust_position(self, instrument, units):
+    def adjust_position(self, instrument, units, price):
         if instrument not in self.positions:
             return False
         else:
@@ -62,15 +62,15 @@ class Book(object):
                 ps.add_units(units)
                 return True
             elif units < 0 and ps.units < 0:
-                ps.add_units(units)
+                ps.add_units(units, price)
                 return True
             # If we are long and we have a short (visa versa) remove units
             elif units > 0 > ps.units:
-                pnl = ps.remove_units(units)
+                pnl = ps.remove_units(units, price)
                 self.balance += pnl
                 return True
             elif units < 0 < ps.units:
-                pnl = ps.remove_units(units)
+                pnl = ps.remove_units(units, price)
                 self.balance += pnl
                 return True
             else:
