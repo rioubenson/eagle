@@ -22,7 +22,7 @@ class Book(object):
     def __init__(
         self, ticker, home_currency="GBP",
         leverage=20, equity=Decimal("100000.00"), 
-        risk_per_trade=Decimal("0.02"), backtest=False
+        risk_per_trade=Decimal("0.1"), backtest=False
     ):
         self.ticker = ticker
         self.home_currency = home_currency
@@ -38,6 +38,7 @@ class Book(object):
             self.backtest_file = self.create_equity_file()
         self.logger = logging.getLogger(__name__)
         self.trade_status = TRADE
+        self.limits = self.get_limits_for_book()
 
     def calc_risk_position_size(self):
         return self.equity * self.risk_per_trade
@@ -45,6 +46,7 @@ class Book(object):
     def add_new_position(
         self, instrument, units, price,
     ):
+
         ps = Position(
             self.home_currency,
             instrument, units, price
@@ -59,31 +61,38 @@ class Book(object):
 
             # if increasing position, then add units
             if units > 0 and ps.units > 0:
-                ps.add_units(units)
+                ps.add_units(units, price)
                 return True
             elif units < 0 and ps.units < 0:
                 ps.add_units(units, price)
                 return True
             # If we are long and we have a short (visa versa) remove units
             elif units > 0 > ps.units:
-                pnl = ps.remove_units(units, price)
-                self.balance += pnl
+                if abs(units) == abs(ps.units):
+                    self.close_position(instrument, price)
+                else:
+                    pnl = ps.remove_units(units, price)
+                    self.balance += pnl
                 return True
             elif units < 0 < ps.units:
-                pnl = ps.remove_units(units, price)
-                self.balance += pnl
+                if abs(units) == abs(ps.units):
+                    self.close_position(instrument, price)
+                else:
+                    pnl = ps.remove_units(units, price)
+                    self.balance += pnl
                 return True
             else:
                 self.logger.error("Unable to determine how to handle order")
                 return False
 
-    def close_position(self, instrument):
+    def close_position(self, instrument, price):
         if instrument not in self.positions:
             return False
         else:
             ps = self.positions[instrument]
-            pnl = ps.close_position()
+            pnl = ps.close_position(price)
             self.balance += pnl
+            print('Closing Position %s' % str(pnl))
             del[self.positions[instrument]]
             return True
 
@@ -131,14 +140,19 @@ class Book(object):
         instrument = tick_event.instrument
         if instrument in self.positions:
             ps = self.positions[instrument]
-            ps.update_position_price()
+            ps.update_curr_price(tick_event.mid)
         if self.backtest:
             out_line = "%s,%s" % (tick_event.time, self.balance)
             for pair in self.ticker.pairs:
                 if pair in self.positions:
-                    out_line += ",%s" % self.positions[pair].profit_base
+                    out_line += ",%s" % self.positions[pair].calculate_profit()
                 else:
                     out_line += ",0.00"
             out_line += "\n"
             print(out_line[:-2])
             self.backtest_file.write(out_line)
+
+    def get_limits_for_book(self):
+        return {'order_size': 50000,
+                'position_size': 100000,
+                'pnl_limit': -10000}

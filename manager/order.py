@@ -22,20 +22,25 @@ class OrderManager(object):
 
         # All necessary pricing data is available,
         # we can try to execute
-        side = signal_event.side
-        instrument = signal_event.instrument
-        multi = 1 if side == 'buy' else -1
-        order_units = int(self.trade_units)
-        positions_units = order_units * multi # means negative for short
+        if signal_event.side == 'close_all':
+            ps = self.book.positions[signal_event.instrument]
+            if ps.units < 0:
+                side = 'buy'
+            else:
+                side = 'sell'
+            units = abs(ps.units)
+        else:
+            side = signal_event.side
+            units = int(self.trade_units)
         time = signal_event.time
-
+        instrument = signal_event.instrument
         # Prepare the order
-        order = OrderEvent(instrument, order_units, "market", side)
+        order = OrderEvent(instrument, units, "market", side)
 
         # Very important risk checks against the book.
         if self.risk.check_limit(order):
             self.events.put(order)
 
-            self.logger.info("Portfolio Balance: %s" % self.balance)
+            self.logger.info("Portfolio Balance: %s" % self.book.balance)
         else:
             self.logger.info("Unable to execute order as breached limit checks.")

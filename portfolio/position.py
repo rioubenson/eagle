@@ -15,7 +15,7 @@ class Position(object):
         self.curr_price = price
 
     def calculate_profit(self):
-        profit = self.curr_price - self.avg_price * self.units
+        profit = (self.curr_price - self.avg_price) * self.units
         return profit.quantize(
             Decimal("0.00001"), ROUND_HALF_DOWN
         )   
@@ -37,12 +37,12 @@ class Position(object):
 
         self.units -= dec_units
         # Calculate PnL
-        pnl = price - self.avg_price * dec_units # might need to have a multiplier
+        pnl = (price - self.avg_price) * dec_units # might need to have a multiplier
         getcontext().rounding = ROUND_HALF_DOWN
         return pnl.quantize(Decimal("0.01"))
 
     def close_position(self, price):
         # Calculate PnL
-        pnl = price - self.avg_price * self.units
+        pnl = (price - self.avg_price) * self.units
         getcontext().rounding = ROUND_HALF_DOWN
         return pnl.quantize(Decimal("0.01"))

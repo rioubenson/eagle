@@ -1,11 +1,15 @@
 from __future__ import print_function
 
 from abc import ABCMeta, abstractmethod
+
+from event.event import FillEvent
+
 try:
     import httplib
 except ImportError:
     import http.client as httplib
 import logging
+import time
 try:
     from urllib import urlencode
 except ImportError:
@@ -38,17 +42,32 @@ class SimulatedExecution(object):
     Instead, the Portfolio object actually provides fill handling.
     This will be modified in later versions.
     """
+
     def execute_order(self, event):
-        pass
+        # mock a fill at current bid ask
+        if event.side == 'buy':
+            fill = FillEvent(time.time(), event.instrument,
+                                'buy', event.units,
+                                '', self.ask,
+                                0)
+        else:
+            fill = FillEvent(time.time(), event.instrument,
+                             'sell', event.units,
+                             '', self.bid,
+                             0)
+        return fill
+
+    def mock_market_price(self, event):
+        self.bid = event.bid
+        self.ask = event.ask
 
 
 class OANDAExecutionHandler(ExecutionHandler):
-    def __init__(self, domain, access_token, account_id, book):
+    def __init__(self, domain, access_token, account_id):
         self.domain = domain
         self.access_token = access_token
         self.account_id = account_id
         self.conn = self.obtain_connection()
-        self.book = book # Important for callbacks
         self.logger = logging.getLogger(__name__)
 
     def obtain_connection(self):

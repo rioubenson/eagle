@@ -11,7 +11,6 @@ import pandas as pd
 
 import settings
 
-
 def month_weekdays(year_int, month_int):
     """
     Produces a list of datetime.date objects representing the
@@ -33,7 +32,7 @@ if __name__ == "__main__":
         np.random.seed(42)  # Fix the randomness
 
         S0 = 1.5000
-        spread = 0.002
+        spread = 0.00015
         mu_dt = 1400  # Milliseconds
         sigma_dt = 100  # Millseconds
         ask = copy.deepcopy(S0) + spread / 2.0

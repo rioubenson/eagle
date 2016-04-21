@@ -19,6 +19,8 @@ class FillManager(object):
         units = fill_event.units
         side = fill_event.side
         price = fill_event.price
+        if side == 'sell':
+            units = units * -1
         # If there is no position, create one
         if instrument not in self.book.positions:
             self.book.add_new_position(
@@ -29,8 +31,6 @@ class FillManager(object):
 
         # If a position exists add or remove units
         else:
-            if side == 'sell':
-                units = units * -1
-                # Close all positions
+            # Close all positions
             self.book.adjust_position(instrument, units, price)
 

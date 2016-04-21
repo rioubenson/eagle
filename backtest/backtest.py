@@ -16,7 +16,7 @@ class Backtest(object):
     """
     def __init__(
         self, pairs, data_handler, strategy, 
-        strategy_params, portfolio, execution, 
+        book, order, execution, fill,
         equity=100000.0, heartbeat=0.0, 
         max_iters=10000000000
     ):
@@ -27,16 +27,18 @@ class Backtest(object):
         self.events = queue.Queue()
         self.csv_dir = settings.CSV_DATA_DIR
         self.ticker = data_handler(self.pairs, self.events, self.csv_dir)
-        self.strategy_params = strategy_params
+        #self.strategy_params = strategy_params
         self.strategy = strategy(
-            self.pairs, self.events, **self.strategy_params
+            self.pairs, self.events #, **self.strategy_params
         )
         self.equity = equity
         self.heartbeat = heartbeat
         self.max_iters = max_iters
-        self.portfolio = portfolio(
+        self.book = book(
             self.ticker, self.events, equity=self.equity, backtest=True
         )
+        self.order = order(self.events, self.book)
+        self.fill = fill(self.events, self.book)
         self.execution = execution()
 
     def _run_backtest(self):
@@ -59,11 +61,17 @@ class Backtest(object):
                 if event is not None:
                     if event.type == 'TICK':
                         self.strategy.calculate_signals(event)
-                        self.portfolio.update_portfolio(event)
+                        self.book.update_book(event)
+                        self.execution.mock_market_price(event)
                     elif event.type == 'SIGNAL':
-                        self.portfolio.execute_signal(event)
+                        self.order.execute_signal(event)
+                        print(event)
                     elif event.type == 'ORDER':
-                        self.execution.execute_order(event)
+                        fill_event = self.execution.execute_order(event)
+                        self.events.put(fill_event) # mock a fill
+                        print(event)
+                    elif event.type == 'FILL':
+                        self.fill.execute_fill(event)
             time.sleep(self.heartbeat)
             iters += 1
 
@@ -72,7 +80,7 @@ class Backtest(object):
         Outputs the strategy performance from the backtest.
         """
         print("Calculating Performance Metrics...")
-        self.portfolio.output_results()
+        self.book.output_results()
 
     def simulate_trading(self):
         """

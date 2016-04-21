@@ -71,7 +71,7 @@ class FillEvent(Event):
 
     def __init__(
         self, timestamp, instrument,
-        side, quantity,
+        side, units,
         exchange, price,
         commission
     ):
@@ -80,7 +80,7 @@ class FillEvent(Event):
         timestamp - The timestamp when the order was filled.
         insturment - The ticker symbol, e.g. 'GOOG', EURUSD etc
         side - 'buy' or 'sell'.
-        quantity - The filled quantity.
+        units - The filled quantity.
         exchange - The exchange where the order was filled.
         price - The price at which the trade was filled
         commission - The brokerage commission for carrying out the trade.
@@ -89,7 +89,16 @@ class FillEvent(Event):
         self.timestamp = timestamp
         self.instrument = instrument
         self.side = side
-        self.quantity = quantity
+        self.units = units
         self.exchange = exchange
         self.price = price
         self.commission = commission
+
+    def __str__(self):
+        return "Type: %s, Instrument: %s, Units: %s, Price: %s, Side: %s" % (
+            str(self.type), str(self.instrument), str(self.units),
+            str(self.price), str(self.side)
+        )
+
+    def __repr__(self):
+        return str(self)

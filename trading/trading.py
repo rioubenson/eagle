@@ -15,13 +15,13 @@ import threading
 import time
 
 from execution.execution import OANDAExecutionHandler
-from portfolio.book import Portfolio
+from portfolio.book import Book
 import settings
 from strategy.gridiron import GridIron
 from data.streaming import StreamingForexPrices
 
 
-def trade(events, strategy, portfolio, order, execution, fill, heartbeat):
+def trade(events, strategy, book, order, execution, fill, heartbeat):
     """
     Carries out an infinite while loop that polls the
     events queue and directs each event to either the
@@ -39,7 +39,7 @@ def trade(events, strategy, portfolio, order, execution, fill, heartbeat):
                 if event.type == 'TICK':
                     logger.info("Received new tick event: %s", event)
                     strategy.calculate_signals(event)
-                    portfolio.update_portfolio(event)
+                    book.update_portfolio(event)
                 elif event.type == 'SIGNAL':
                     logger.info("Received new signal event: %s", event)
                     order.execute_signal(event)
@@ -88,15 +88,15 @@ if __name__ == "__main__":
     # Create the portfolio object that will be used to
     # compare the OANDA positions with the local, to
     # ensure backtesting integrity.
-    portfolio = Portfolio(
+    book = Book(
         prices, events, equity=equity, backtest=False
     )
 
     # Create an order manager
-    order = OrderManager(events, portfolio)
+    order = OrderManager(events, book)
 
     # Create an fill manager
-    fill = FillManager(events, portfolio)
+    fill = FillManager(events, book)
 
     # Create the execution handler making sure to
     # provide authentication commands
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     # and another for the market price streaming class
     trade_thread = threading.Thread(
         target=trade, args=(
-            events, strategy, portfolio, order, execution, fill, heartbeat
+            events, strategy, book, order, execution, fill, heartbeat
         )
     )
     price_thread = threading.Thread(target=prices.stream_to_queue, args=[])
