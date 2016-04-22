@@ -4,7 +4,7 @@ from copy import deepcopy
 from decimal import Decimal, getcontext, ROUND_HALF_DOWN
 import logging
 import os
-
+import time
 import pandas as pd
 
 from position import Position
@@ -39,6 +39,7 @@ class Book(object):
         self.logger = logging.getLogger(__name__)
         self.trade_status = TRADE
         self.limits = self.get_limits_for_book()
+        self.start_time = time.time()
 
     def calc_risk_position_size(self):
         return self.equity * self.risk_per_trade
@@ -92,7 +93,7 @@ class Book(object):
             ps = self.positions[instrument]
             pnl = ps.close_position(price)
             self.balance += pnl
-            print('Closing Position %s' % str(pnl))
+            print('Closing Position %s, %s' % (str(pnl), str(self.balance)))
             del[self.positions[instrument]]
             return True
 
@@ -141,7 +142,7 @@ class Book(object):
         if instrument in self.positions:
             ps = self.positions[instrument]
             ps.update_curr_price(tick_event.mid)
-        if self.backtest:
+        if time.time() - self.start_time > 2:
             out_line = "%s,%s" % (tick_event.time, self.balance)
             for pair in self.ticker.pairs:
                 if pair in self.positions:
@@ -151,7 +152,7 @@ class Book(object):
             out_line += "\n"
             print(out_line[:-2])
             self.backtest_file.write(out_line)
-
+            self.start_time = time.time()
     def get_limits_for_book(self):
         return {'order_size': 50000,
                 'position_size': 100000,

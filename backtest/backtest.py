@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+#from statistics.statistics import Statistics
+
 try:
     import Queue as queue
 except ImportError:
@@ -65,11 +67,9 @@ class Backtest(object):
                         self.execution.mock_market_price(event)
                     elif event.type == 'SIGNAL':
                         self.order.execute_signal(event)
-                        print(event)
                     elif event.type == 'ORDER':
                         fill_event = self.execution.execute_order(event)
                         self.events.put(fill_event) # mock a fill
-                        print(event)
                     elif event.type == 'FILL':
                         self.fill.execute_fill(event)
             time.sleep(self.heartbeat)
@@ -87,5 +87,7 @@ class Backtest(object):
         Simulates the backtest and outputs portfolio performance.
         """
         self._run_backtest()
-        self._output_performance()
         print("Backtest complete.")
+        #statistics = Statistics()
+        #statistics.generate_results()
+        #statistics.plot_results()

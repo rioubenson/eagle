@@ -16,10 +16,10 @@ if __name__ == "__main__":
 
     # Create the strategy parameters for the
     # MovingAverageCrossStrategy
-    #strategy_params = {
-    #    "short_window": 500,
-    #    "long_window": 2000
-    #}
+    strategy_params = {
+        "short_window": 500,
+        "long_window": 2000
+    }
 
     # Create and execute the backtest
     backtest = Backtest(

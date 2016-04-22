@@ -21,6 +21,29 @@ class TickEvent(Event):
         return str(self)
 
 
+'''Not Currently in Use'''
+class BarEvent(Event):
+    def __init__(self, instrument, time, interval, open_mid,  close_mid, high_mid, low_mid, volume):
+        self.type = 'BAR'
+        self.instrument = instrument
+        self.interval = interval
+        self.open = open_mid
+        self.close = close_mid
+        self.high = high_mid
+        self.low = low_mid
+        self.volume = volume
+
+    def __str__(self):
+        return "Type: %s, Instrument: %s, Interval: %s, Time: %s, Open: %s, Close: %s, High: %s, Low: %s, Vol: %s" % (
+            str(self.type), str(self.instrument),
+            str(self.time), str(self.interval), str(self.open), str(self.close), str(self.high), str(self.low),
+            str(self.volume)
+        )
+
+    def __repr__(self):
+        return str(self)
+
+
 class SignalEvent(Event):
     def __init__(self, instrument, order_type, side, time):
         self.type = 'SIGNAL'
