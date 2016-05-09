@@ -8,9 +8,7 @@ import pandas as pd
 import sklearn
 
 from pandas.io.data import DataReader
-from sklearn.linear_model import LogisticRegression
-from sklearn.lda import LDA
-from sklearn.qda import QDA
+from sklearn.linear_model import *
 from indicator.moving_average import simple_moving_average
 from settings import CSV_DATA_DIR
 
@@ -60,6 +58,7 @@ class Trendy(Analysis):
         ax = returns.plot()
         plt.show()
 
+
 class Brain(Analysis):
     """Uses Machine Learning to identify predictive returns based on inputs"""
 
@@ -102,7 +101,7 @@ class Brain(Analysis):
         # If any of the values of percentage returns equal zero, set them to
         # a small number (stops issues with QDA model in scikit-learn)
         for i, x in enumerate(tsret["Today"]):
-            if (abs(x) < 0.0001):
+            if abs(x) < 0.0001:
                 tsret["Today"][i] = 0.0001
 
         # Create the lagged percentage returns columns
@@ -140,7 +139,7 @@ class Brain(Analysis):
 
         # Create and fit the three models
         print "Hit Rates:"
-        models = [("LR", LogisticRegression()), ("LDA", LDA()), ("QDA", QDA())]
+        models = [("LR", LinearRegression())]
         for m in models:
             self.fit_model(m[0], m[1], X_train, y_train, X_test, pred)
 

@@ -15,8 +15,8 @@ ENVIRONMENTS = {
     }
 }
 
-CSV_DATA_DIR = '/apps/homefs1/rbenson/eagle/'  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
-OUTPUT_RESULTS_DIR = '/apps/homefs1/rbenson/eagle/' #os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
+CSV_DATA_DIR = 'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/'  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
+OUTPUT_RESULTS_DIR = 'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/' #os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
 
 DOMAIN = "sandbox"
 STREAM_DOMAIN = ENVIRONMENTS["streaming"][DOMAIN]
