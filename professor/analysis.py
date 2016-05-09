@@ -11,6 +11,8 @@ from pandas.io.data import DataReader
 from sklearn.linear_model import *
 from sklearn.lda import LDA
 from sklearn.qda import QDA
+
+from common.maths import normalise_data
 from indicator.moving_average import simple_moving_average
 from settings import CSV_DATA_DIR
 
@@ -43,13 +45,32 @@ class Trendy(Analysis):
         data['return_5_timeframe'] = np.log(data['Close'] / data['Close'].shift(5)) * 100
         #data['return_10_timeframe'] = np.log(data['Close'] / data['Close'].shift(10)) * 100
         data.fillna(0.0001, inplace=True)
+        data['vol_normalised'] = normalise_data(data['Volume'])
+        # Bucket Return
+        def bucket_return(x, col):
+            if 0 < x[col] < 0.02:
+                return 1
+            if 0.02 < x[col] < 0.1:
+                return 2
+            if x[col] > 0.1:
+                return 3
 
+            if 0 > x[col] > -0.02:
+                return -1
+            if -0.02 > x[col] > -0.1:
+                return -2
+            if x[col] < -0.1:
+                return -3
+            else:
+                return 0
+
+        data['Return'] = data.apply(bucket_return, axis=1, args=['return_5_timeframe'])
         # Now add some moving averages
-        smas = [5,9,20,50,100,200]
-        for sma in smas:
-            data = simple_moving_average(data, sma, 'Close', normalise=True)
+        #smas = [9,200]
+        #for sma in smas:
+        #    data = simple_moving_average(data, sma, 'Close', normalise=True)
 
-
+        data['Move'] = data['Close'] - data['Open']
         """
         EMAs = [5, 9, 20, 50, 100, 200]
         for ema in EMAs:
@@ -58,12 +79,12 @@ class Trendy(Analysis):
         """
 
         # X as predictor values, with Y as the response
-        X = data[["5SMA", "9SMA", "20SMA", "50SMA", "100SMA", "200SMA"]]
-        y = data["return_5_timeframe"]
+        X = data[[ "Move", "vol_normalised"]]
+        y = data["Return"]
 
         # The test data is split into two parts: Before and after 1st Jan 2005.
         start_test = datetime.datetime(2016, 04, 26)
-
+        print data
         # Create training and test sets
         x_train = X[X.index < start_test]
         x_test = X[X.index >= start_test]
@@ -97,6 +118,7 @@ class Brain():
         # and then calculate the hit rate based on the actual direction
         pred["%s_Correct" % name] = (1.0 + pred[name] * pred["Actual"]) / 2.0
         hit_rate = np.mean(pred["%s_Correct" % name])
+
         print "%s: %.3f" % (name, hit_rate)
 
     def perform_regression_analysis(self):
@@ -118,50 +140,15 @@ class Brain():
                 print "Not able to do %s" % str(m)
 
 
-linear = [#ARDRegression,
-          #BayesianRidge,
-          #ElasticNet,
-          #ElasticNetCV,
-          #Hinge,
-          #Huber,
-          #Lars,
-          #LarsCV,
-          #Lasso,
-          #LassoCV,
-          #LassoLars,
-          #LassoLarsCV,
-          #LassoLarsIC,
-          #LinearRegression,
-          #Log,
-          LogisticRegression,
-          #LogisticRegressionCV,
-          #ModifiedHuber,
-          #MultiTaskElasticNet,
-          #MultiTaskElasticNetCV,
-          #MultiTaskLasso,
-          #MultiTaskLassoCV,
-          #OrthogonalMatchingPursuit,
-          #OrthogonalMatchingPursuitCV,
-          #PassiveAggressiveClassifier,
-          #PassiveAggressiveRegressor,
-          #Perceptron,
-          #RandomizedLasso,
-          #RandomizedLogisticRegression,
-          #Ridge,
-          #RidgeCV,
-          #RidgeClassifier,
-          #RidgeClassifierCV,
-          #SGDClassifier,
-          #SGDRegressor,
-          #SquaredLoss,
-          #TheilSenRegressor,
-          #enet_path,
-          #lars_path,
-          #lasso_path,
-          #lasso_stability_path,
-          #logistic_regression_path,
-          #orthogonal_mp,
-          #orthogonal_mp_gram,
-          #ridge_regression,
-          #RANSACRegressor
+linear = [LogisticRegression,
+          LDA,
+         QDA,
+         # LassoLars,
+         # LassoLarsCV,
+         # LassoLarsIC,
+         # LinearRegression,
+         # Ridge,
+         # RidgeCV,
+         # SGDRegressor,
+         # TheilSenRegressor,
             ]
