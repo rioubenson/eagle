@@ -84,7 +84,7 @@ class Trendy(Analysis):
 
         # The test data is split into two parts: Before and after 1st Jan 2005.
         start_test = datetime.datetime(2016, 04, 26)
-        print data
+
         # Create training and test sets
         x_train = X[X.index < start_test]
         x_test = X[X.index >= start_test]
