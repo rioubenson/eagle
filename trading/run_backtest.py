@@ -8,23 +8,16 @@ from portfolio.book import Book
 import settings
 from strategy.gridiron import GridIron
 from data.price import HistoricCSVPriceHandler
-
+from strategy.mustang import Mustang
 
 if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD
     pairs = ["EURUSD"]
 
-    # Create the strategy parameters for the
-    # MovingAverageCrossStrategy
-    strategy_params = {
-        "short_window": 500,
-        "long_window": 2000
-    }
-
     # Create and execute the backtest
     backtest = Backtest(
         pairs, HistoricCSVPriceHandler,
-        GridIron,
+        Mustang,
         Book, OrderManager, SimulatedExecution, FillManager,
         equity=settings.EQUITY
     )

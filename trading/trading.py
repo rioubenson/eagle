@@ -6,6 +6,7 @@ import logging.config
 from dropcopy.dropcopy import OANDAStreamingDropcopy
 from manager.order import OrderManager
 from manager.fill import FillManager
+from strategy.mustang import Mustang
 
 try:
     import Queue as queue
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     # Create the strategy/signal generator, passing the
     # instrument and the events queue
-    strategy = GridIron(pairs, events)
+    strategy = Mustang(pairs, events)
 
     # Create the portfolio object that will be used to
     # compare the OANDA positions with the local, to

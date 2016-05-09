@@ -1,4 +1,4 @@
-from analysis import Brain
+from analysis import Trendy
 
 class Professor(object):
     '''A class that attempts to find '''
@@ -16,6 +16,6 @@ if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD
     pair = "EURUSD"
     time_frame = '1M'
-    type = Brain
+    type = Trendy
     professor = Professor(pair, time_frame, type)
     professor.start_professor()
