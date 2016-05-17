@@ -79,7 +79,7 @@ class Trendy(Analysis):
         """
 
         # X as predictor values, with Y as the response
-        X = data[[ "Move", "vol_normalised"]]
+        X = data[[ "Move"]]
         y = data["Return"]
 
         # The test data is split into two parts: Before and after 1st Jan 2005.

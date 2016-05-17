@@ -1,7 +1,9 @@
 from analysis import Trendy
 
+
 class Professor(object):
     '''A class that attempts to find '''
+
     def __init__(self, instrument, time_frame, type):
         self.instrument = instrument
         self.time_frame = time_frame
@@ -11,6 +13,7 @@ class Professor(object):
         results = self.type.start()
 
         # print results
+
 
 if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD

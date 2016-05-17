@@ -35,7 +35,7 @@ class Position(object):
     def remove_units(self, units, price):
         dec_units = Decimal(str(units))
 
-        self.units -= dec_units
+        self.units += dec_units
         # Calculate PnL
         pnl = (price - self.avg_price) * dec_units # might need to have a multiplier
         getcontext().rounding = ROUND_HALF_DOWN

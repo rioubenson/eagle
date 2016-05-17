@@ -9,6 +9,8 @@ import settings
 from strategy.gridiron import GridIron
 from data.price import HistoricCSVPriceHandler
 from strategy.mustang import Mustang
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD
