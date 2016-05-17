@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a7ae774-d9c6-4b58-8a39-6b67ae17a9f8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/bars.py" afterPath="$PROJECT_DIR$/common/bars.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/execution.py" afterPath="$PROJECT_DIR$/execution/execution.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/portfolio/book.py" afterPath="$PROJECT_DIR$/portfolio/book.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/portfolio/position.py" afterPath="$PROJECT_DIR$/portfolio/position.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/indicator/indicator.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/maths.py" afterPath="$PROJECT_DIR$/common/maths.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indicator/awesome_indicator.py" afterPath="$PROJECT_DIR$/indicator/awesome_indicator.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indicator/moving_average.py" afterPath="$PROJECT_DIR$/indicator/moving_average.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/professor/analysis.py" afterPath="$PROJECT_DIR$/professor/analysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/professor/professor.py" afterPath="$PROJECT_DIR$/professor/professor.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strategy/mustang.py" afterPath="$PROJECT_DIR$/strategy/mustang.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.py" afterPath="$PROJECT_DIR$/settings.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strategy/gridiron.py" afterPath="$PROJECT_DIR$/strategy/gridiron.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trading/run_backtest.py" afterPath="$PROJECT_DIR$/trading/run_backtest.py" />
     </list>
     <ignored path="untitled.iws" />
@@ -92,7 +92,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="position.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="position.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/portfolio/position.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="308">
@@ -102,11 +102,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bars.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/bars.py">
+      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/professor/analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="50" selection-start-line="4" selection-start-column="50" selection-end-line="4" selection-end-column="50" />
+            <state relative-caret-position="308">
+              <caret line="232" column="16" selection-start-line="232" selection-start-column="16" selection-end-line="232" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -122,11 +122,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_backtest.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_backtest.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trading/run_backtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="12" column="62" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
+            <state relative-caret-position="68">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -178,14 +178,14 @@
         <option value="$PROJECT_DIR$/indicators/awesome_indicator.py" />
         <option value="$PROJECT_DIR$/settings.py" />
         <option value="$PROJECT_DIR$/trading/trading.py" />
-        <option value="$PROJECT_DIR$/professor/analysis.py" />
         <option value="$PROJECT_DIR$/execution/execution.py" />
         <option value="$PROJECT_DIR$/professor/professor.py" />
         <option value="$PROJECT_DIR$/common/bars.py" />
-        <option value="$PROJECT_DIR$/trading/run_backtest.py" />
         <option value="$PROJECT_DIR$/portfolio/book.py" />
         <option value="$PROJECT_DIR$/strategy/mustang.py" />
         <option value="$PROJECT_DIR$/portfolio/position.py" />
+        <option value="$PROJECT_DIR$/professor/analysis.py" />
+        <option value="$PROJECT_DIR$/trading/run_backtest.py" />
       </list>
     </option>
   </component>
@@ -657,9 +657,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="0" width="1367" height="735" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17468542" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17468542" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -719,7 +719,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/strategy/gridiron.py</url>
-          <line>103</line>
+          <line>101</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -933,13 +933,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/professor/analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-394">
-          <caret line="72" column="51" selection-start-line="72" selection-start-column="8" selection-end-line="72" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/execution/execution.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="199">
@@ -983,16 +976,6 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trading/run_backtest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="12" column="62" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1043,6 +1026,24 @@
         <state relative-caret-position="308">
           <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/professor/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="232" column="16" selection-start-line="232" selection-start-column="16" selection-end-line="232" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trading/run_backtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
