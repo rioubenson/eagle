@@ -12,17 +12,17 @@ from performance.performance import create_drawdowns
 from settings import OUTPUT_RESULTS_DIR
 
 # List of book trading status
-TRADE = 'trade' # Full Trading allowed
-STOP = 'stop' # End Trading completely
-FLATTEN = 'flatten' # Only risk reducing orders allowed
-RESTRICTED = 'restricted' # Temp no trading allowed - e.g limit breach
+TRADE = 'trade'  # Full Trading allowed
+STOP = 'stop'  # End Trading completely
+FLATTEN = 'flatten'  # Only risk reducing orders allowed
+RESTRICTED = 'restricted'  # Temp no trading allowed - e.g limit breach
 
 
 class Book(object):
     def __init__(
-        self, ticker, home_currency="GBP",
-        leverage=20, equity=Decimal("100000.00"), 
-        risk_per_trade=Decimal("0.1"), backtest=False
+            self, ticker, home_currency="GBP",
+            leverage=20, equity=Decimal("100000.00"),
+            risk_per_trade=Decimal("0.1"), backtest=False
     ):
         self.ticker = ticker
         self.home_currency = home_currency
@@ -45,7 +45,7 @@ class Book(object):
         return self.equity * self.risk_per_trade
 
     def add_new_position(
-        self, instrument, units, price,
+            self, instrument, units, price,
     ):
 
         ps = Position(
@@ -94,7 +94,7 @@ class Book(object):
             pnl = ps.close_position(price)
             self.balance += pnl
             print('Closing Position %s, %s' % (str(pnl), str(self.balance)))
-            del[self.positions[instrument]]
+            del [self.positions[instrument]]
             return True
 
     def create_equity_file(self):
@@ -113,9 +113,9 @@ class Book(object):
         # Closes off the Backtest.csv file so it can be 
         # read via Pandas without problems
         self.backtest_file.close()
-        
+
         in_filename = "backtest.csv"
-        out_filename = "equity.csv" 
+        out_filename = "equity.csv"
         in_file = os.path.join(OUTPUT_RESULTS_DIR, in_filename)
         out_file = os.path.join(OUTPUT_RESULTS_DIR, out_filename)
 
@@ -124,13 +124,13 @@ class Book(object):
         df.dropna(inplace=True)
         df["Total"] = df.sum(axis=1)
         df["Returns"] = df["Total"].pct_change()
-        df["Equity"] = (1.0+df["Returns"]).cumprod()
-        
+        df["Equity"] = (1.0 + df["Returns"]).cumprod()
+
         # Create drawdown statistics
         drawdown, max_dd, dd_duration = create_drawdowns(df["Equity"])
         df["Drawdown"] = drawdown
         df.to_csv(out_file, index=True)
-        
+
         print("Simulation complete and results exported to %s" % out_filename)
 
     def update_book(self, tick_event):
@@ -143,16 +143,19 @@ class Book(object):
             ps = self.positions[instrument]
             ps.update_curr_price(tick_event.mid)
         if time.time() - self.start_time > 2:
-            out_line = "%s,%s" % (tick_event.time, self.balance)
+            out_line = "%s, Balance: %s" % (tick_event.time, self.balance)
             for pair in self.ticker.pairs:
                 if pair in self.positions:
-                    out_line += ",%s" % self.positions[pair].calculate_profit()
+                    out_line += ", Current Profit: %s, Units %s" % (self.positions[pair].calculate_profit(),
+                                                                    self.positions[pair].units)
                 else:
-                    out_line += ",0.00"
+                    out_line += ",0.00, 0"
+
             out_line += "\n"
             print(out_line[:-2])
             self.backtest_file.write(out_line)
             self.start_time = time.time()
+
     def get_limits_for_book(self):
         return {'order_size': 50000,
                 'position_size': 100000,

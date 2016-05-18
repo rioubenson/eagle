@@ -14,8 +14,8 @@ try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
-import urllib3
-urllib3.disable_warnings()
+#import urllib3
+#urllib3.disable_warnings()
 
 
 class ExecutionHandler(object):

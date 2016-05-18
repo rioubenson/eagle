@@ -112,6 +112,7 @@ class Trendy(Analysis):
         data = MassI(data)
         data = MACD(data, 12, 26)
         """
+
         print data
         data = self.create_lagged_series(data)
         data['Trend'] = data.apply(bucket_return, axis=1, args=['Return'])
@@ -164,7 +165,6 @@ class Trendy(Analysis):
                 brain.y_test = y_test
 
                 brain.perform_classification_analysis()
-
 
 class Brain():
     """Uses Machine Learning to identify predictive returns based on inputs"""
