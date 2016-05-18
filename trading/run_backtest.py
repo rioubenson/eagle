@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # Create and execute the backtest
     backtest = Backtest(
         pairs, HistoricCSVPriceHandler,
-        GridIron,
+        MovingAverageCrossStrategy,
         Book, OrderManager, SimulatedExecution, FillManager,
         equity=settings.EQUITY
     )
