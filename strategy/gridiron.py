@@ -95,22 +95,28 @@ class GridIron(object):
 
     def calculate_signals(self, event):
         if event.type == 'TICK':
-            if self.grid is None:
-                # Set up a grid
-                self.grid = Grid(self.instrument)
-                self.grid.start_grid(event.mid, self.mode)
-            else:
-                if self.mode == 'AR':
-                    self.ar_grid(event)
-                elif self.mode == 'TREND':
-                    self.trend_grid(event)
+            # Firstly dont do any thing until after 8am
+            if 8 < int(event.time.hour) < 18:
+                if self.grid is None:
+                    # Set up a grid
+                    self.grid = Grid(self.instrument)
+                    self.grid.start_grid(event.mid, self.mode)
+                else:
+                    if self.mode == 'AR':
+                        self.ar_grid(event)
+                    elif self.mode == 'TREND':
+                        self.trend_grid(event)
+            if event.time.hour > 18:
+                if self.grid is not None and self.grid.level_triggered != 0:
+                    signal = SignalEvent(event.instrument, "market", "close_all", time.time())
+                    self.events.put(signal)
 
     def ar_grid(self, event):
         # If the mid has crossed the first buy, then generate a signal
         if self.grid.level_triggered == 0 and event.mid > self.grid.buy_level_one:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.5)
+            signal = SignalEvent(event.instrument, "market", "sell", time.time())
             print "Opening position level 1 AR, mid %s" % event.mid
-            self.events.put(signal)
+            #self.events.put(signal)
             self.grid.shift_grid_ar(1)
 
         elif self.grid.level_triggered == 1 and event.mid > self.grid.buy_level_two:
@@ -132,8 +138,8 @@ class GridIron(object):
             self.grid = None  # Done with this grid.
         # If the mid has crossed the first sell, then generate a signal
         elif self.grid.level_triggered == 0 and event.mid < self.grid.sell_level_one:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.5)
-            self.events.put(signal)
+            signal = SignalEvent(event.instrument, "market", "buy", time.time())
+            #self.events.put(signal)
             print "Opening position level -1 AR, mid %s" % event.mid
             self.grid.shift_grid_ar(-1)
 
