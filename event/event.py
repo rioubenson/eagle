@@ -45,11 +45,12 @@ class BarEvent(Event):
 
 
 class SignalEvent(Event):
-    def __init__(self, instrument, order_type, side, time):
+    def __init__(self, instrument, order_type, side, time, units_multiplier=1):
         self.type = 'SIGNAL'
         self.instrument = instrument
         self.order_type = order_type
         self.side = side
+        self.units_multiplier = units_multiplier
         self.time = time  # Time of the last tick that generated the signal
 
     def __str__(self):

@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 #from statistics.statistics import Statistics
+from statistics.statistics import Statistics
 
 try:
     import Queue as queue
@@ -19,7 +20,7 @@ class Backtest(object):
     def __init__(
         self, pairs, data_handler, strategy, 
         book, order, execution, fill,
-        equity=100000.0, heartbeat=0.0, 
+        equity=100000.0, heartbeat=0.0001,
         max_iters=10000000000
     ):
         """
@@ -80,13 +81,14 @@ class Backtest(object):
         Outputs the strategy performance from the backtest.
         """
         print("Calculating Performance Metrics...")
-        self.book.output_results()
+        #self.book.output_results()
 
     def simulate_trading(self):
         """
         Simulates the backtest and outputs portfolio performance.
         """
         self._run_backtest()
+        self._output_performance()
         print("Backtest complete.")
         #statistics = Statistics()
         #statistics.generate_results()

@@ -1,2 +1,4 @@
 def get_tick_size(instrument):
-    return 0.0001
+    _dict = {'EURUSD': 0.0001,
+             'FESXXX': 1}
+    return _dict.get(instrument, 0.0001)

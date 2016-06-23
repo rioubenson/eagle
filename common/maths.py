@@ -10,3 +10,6 @@ def normalise_data(values):
         return 1 /(1 + np.exp(-1 * ((x - x_mean) / x_std)))
 
     return values.apply(calc, args=(mean, std))
+
+def is_rising(values):
+    """Takes a series and returns a true if latest value is above latest bar one"""

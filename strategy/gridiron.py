@@ -27,46 +27,49 @@ class Grid(object):
 
     def start_grid(self, mid_point, mode):
         self.grid_mid = float(mid_point)
+        tick_size = get_tick_size(self.instrument[0])
         # Change to volatility based
         if mode == 'TREND':
-            self.buy_level_one = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
-            self.buy_level_two = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.buy_level_three = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 6))
-            self.take_profit_buy = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 8))
-            self.stop_loss_buy = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.buy_level_one = self.grid_mid + (tick_size * (get_grid_spacing() * 2))
+            self.buy_level_two = self.grid_mid + (tick_size * (get_grid_spacing() * 4))
+            self.buy_level_three = self.grid_mid + (tick_size * (get_grid_spacing() * 6))
+            self.take_profit_buy = self.grid_mid + (tick_size * (get_grid_spacing() * 8))
+            self.stop_loss_buy = self.grid_mid - (tick_size* (get_grid_spacing() * 2))
 
-            self.sell_level_one = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
-            self.sell_level_two = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.sell_level_three = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 6))
-            self.take_profit_sell = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 8))
-            self.stop_loss_sell = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.sell_level_one = self.grid_mid - (tick_size * (get_grid_spacing() * 2))
+            self.sell_level_two = self.grid_mid - (tick_size * (get_grid_spacing() * 4))
+            self.sell_level_three = self.grid_mid - (tick_size * (get_grid_spacing() * 6))
+            self.take_profit_sell = self.grid_mid - (tick_size * (get_grid_spacing() * 8))
+            self.stop_loss_sell = self.grid_mid + (tick_size * (get_grid_spacing() * 2))
         else:
-            self.buy_level_one = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
-            self.buy_level_two = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.buy_level_three = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.take_profit_buy = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 6))
-            self.stop_loss_buy = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.buy_level_one = self.grid_mid + (tick_size * (get_grid_spacing() * 2))
+            self.buy_level_two = self.grid_mid + (tick_size * (get_grid_spacing() * 4))
+            self.buy_level_three = self.grid_mid + (tick_size * (get_grid_spacing() * 4))
+            self.take_profit_buy = self.grid_mid + (tick_size * (get_grid_spacing() * 6))
+            self.stop_loss_buy = self.grid_mid - (tick_size * (get_grid_spacing() * 2))
 
-            self.sell_level_one = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
-            self.sell_level_two = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.sell_level_three = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 4))
-            self.take_profit_sell = self.grid_mid - (get_tick_size(self.instrument) * (get_grid_spacing() * 6))
-            self.stop_loss_sell = self.grid_mid + (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.sell_level_one = self.grid_mid - (tick_size * (get_grid_spacing() * 2))
+            self.sell_level_two = self.grid_mid - (tick_size * (get_grid_spacing() * 4))
+            self.sell_level_three = self.grid_mid - (tick_size * (get_grid_spacing() * 4))
+            self.take_profit_sell = self.grid_mid - (tick_size * (get_grid_spacing() * 6))
+            self.stop_loss_sell = self.grid_mid + (tick_size * (get_grid_spacing() * 2))
 
     def shift_grid_ar(self, direction ):
+        tick_size = get_tick_size(self.instrument[0])
         if direction > 0:
-            self.take_profit_buy += (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.take_profit_buy += (tick_size * (get_grid_spacing() * 2))
             self.level_triggered += 1
         elif direction < 0:
-            self.take_profit_sell -= (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.take_profit_sell -= (tick_size * (get_grid_spacing() * 2))
             self.level_triggered -= 1
 
     def shift_grid_trend(self, direction):
+        tick_size = get_tick_size(self.instrument[0])
         if direction > 0:
-            self.stop_loss_buy += (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.stop_loss_buy += (tick_size * (get_grid_spacing() * 2))
             self.level_triggered += 1
         elif direction < 0:
-            self.stop_loss_sell -= (get_tick_size(self.instrument) * (get_grid_spacing() * 2))
+            self.stop_loss_sell -= (tick_size * (get_grid_spacing() * 2))
             self.level_triggered -= 1
 
     def __str__(self):
@@ -105,7 +108,7 @@ class GridIron(object):
     def ar_grid(self, event):
         # If the mid has crossed the first buy, then generate a signal
         if self.grid.level_triggered == 0 and event.mid > self.grid.buy_level_one:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time())
+            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.5)
             print "Opening position level 1 AR, mid %s" % event.mid
             self.events.put(signal)
             self.grid.shift_grid_ar(1)
@@ -129,7 +132,7 @@ class GridIron(object):
             self.grid = None  # Done with this grid.
         # If the mid has crossed the first sell, then generate a signal
         elif self.grid.level_triggered == 0 and event.mid < self.grid.sell_level_one:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time())
+            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.5)
             self.events.put(signal)
             print "Opening position level -1 AR, mid %s" % event.mid
             self.grid.shift_grid_ar(-1)
@@ -165,12 +168,12 @@ class GridIron(object):
             self.grid.shift_grid_trend(1)
 
         elif self.grid.level_triggered == 1 and event.mid > self.grid.buy_level_two:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time())
+            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.5)
             #self.events.put(signal)
             print "Opening position level 2 TREND, mid %s" % event.mid
             self.grid.shift_grid_trend(1)
         elif self.grid.level_triggered == 2 and event.mid > self.grid.buy_level_three:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time())
+            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.25)
             #self.events.put(signal)
             print "Opening position level 3 TREND, mid %s" % event.mid
             self.grid.shift_grid_trend(1)
@@ -198,12 +201,12 @@ class GridIron(object):
             self.grid.shift_grid_trend(-1)
 
         elif self.grid.level_triggered == -1 and event.mid < self.grid.sell_level_two:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time())
+            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.5)
             #self.events.put(signal)
             print "Opening position level -2 TREND, mid %s" % event.mid
             self.grid.shift_grid_trend(-1)
         elif self.grid.level_triggered == -2 and event.mid < self.grid.sell_level_three:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time())
+            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.25)
             #self.events.put(signal)
             print "Opening position level -3 TREND, mid %s" % event.mid
             self.grid.shift_grid_trend(-1)

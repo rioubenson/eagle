@@ -23,7 +23,12 @@ class OrderManager(object):
         # All necessary pricing data is available,
         # we can try to execute
         if signal_event.side == 'close_all':
-            ps = self.book.positions[signal_event.instrument]
+            try:
+                ps = self.book.positions[signal_event.instrument]
+            except KeyError:
+                self.logger.error("Tried to close all positions but couldnt find one")
+                return
+
             if ps.units < 0:
                 side = 'buy'
             else:
@@ -31,7 +36,7 @@ class OrderManager(object):
             units = abs(ps.units)
         else:
             side = signal_event.side
-            units = int(self.trade_units)
+            units = int(round(int(self.trade_units) * signal_event.units_multiplier))
         time = signal_event.time
         instrument = signal_event.instrument
         # Prepare the order

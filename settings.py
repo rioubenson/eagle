@@ -15,8 +15,9 @@ ENVIRONMENTS = {
     }
 }
 
-CSV_DATA_DIR = '/apps/homefs1/rbenson/eagle/real/' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/'  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
+CSV_DATA_DIR = '/apps/homefs1/rbenson/eagle/EURUSD' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/'  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
 OUTPUT_RESULTS_DIR = '/apps/homefs1/rbenson/eagle/' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/' #os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
+OUTPUT_DIR = '/apps/homefs1/rbenson/eagle/'
 
 DOMAIN = "sandbox"
 STREAM_DOMAIN = ENVIRONMENTS["streaming"][DOMAIN]

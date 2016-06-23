@@ -22,7 +22,7 @@ class Book(object):
     def __init__(
             self, ticker, home_currency="GBP",
             leverage=20, equity=Decimal("100000.00"),
-            risk_per_trade=Decimal("0.1"), backtest=False
+            risk_per_trade=Decimal("0.5"), backtest=False
     ):
         self.ticker = ticker
         self.home_currency = home_currency
@@ -152,11 +152,11 @@ class Book(object):
                     out_line += ",0.00, 0"
 
             out_line += "\n"
-            print(out_line[:-2])
+            print(out_line[:-1])
             self.backtest_file.write(out_line)
             self.start_time = time.time()
 
     def get_limits_for_book(self):
-        return {'order_size': 50000,
-                'position_size': 100000,
+        return {'order_size': 150000,
+                'position_size': 400000,
                 'pnl_limit': -10000}

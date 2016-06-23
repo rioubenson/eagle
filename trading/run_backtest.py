@@ -16,12 +16,12 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD
-    pairs = ["EURGBP"]
+    pairs = ["EURUSD"]
 
     # Create and execute the backtest
     backtest = Backtest(
         pairs, HistoricCSVPriceHandler,
-        MovingAverageCrossStrategy,
+        GridIron,
         Book, OrderManager, SimulatedExecution, FillManager,
         equity=settings.EQUITY
     )
