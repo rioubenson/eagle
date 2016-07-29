@@ -26,4 +26,4 @@ ACCESS_TOKEN = os.environ.get('OANDA_API_ACCESS_TOKEN', None)
 ACCOUNT_ID = os.environ.get('OANDA_API_ACCOUNT_ID', None)
 
 BASE_CURRENCY = "GBP"
-EQUITY = Decimal("100000.00")
+EQUITY = Decimal("1000000.00")

@@ -6,11 +6,14 @@ from manager.fill import FillManager
 from manager.order import OrderManager
 from portfolio.book import Book
 import settings
-from strategy.gridiron import GridIron
+from strategy.gridiron_old import GridIron
 from data.price import HistoricCSVPriceHandler
 from strategy.mustang import Mustang
 
 import warnings
+
+from strategy.mva import MovingAverageCrossStrategy
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
