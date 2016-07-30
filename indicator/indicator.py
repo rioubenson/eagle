@@ -412,6 +412,12 @@ def STDDEV(df, n):
     return df
 
 
+# William's Vix Fix
+def WVF(df, n=22):
+    df['wvf'] = ((pd.rolling_max(df['close'], n) - df['low']) / pd.rolling_max(df['close'], n)) * 100
+    return df
+
+
 # Awesome Indicator
 def awesome_indicator(historic_bars, normalise=False):
     """Calculates the Bill William's Awesome
