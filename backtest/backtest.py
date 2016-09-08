@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 #from statistics.statistics import Statistics
+from data.price import BarGenerator
 from statistics.statistics import Statistics
 
 try:
@@ -55,6 +56,8 @@ class Backtest(object):
         """
         print("Running Backtest...")
         iters = 0
+        # set up the bar generator
+        bar_generator = BarGenerator()
         while iters < self.max_iters and self.ticker.continue_backtest:
             try:
                 event = self.events.get(False)
@@ -63,9 +66,15 @@ class Backtest(object):
             else:
                 if event is not None:
                     if event.type == 'TICK':
+                        # Create bars
+                        bar = bar_generator.add_tick(event)
+                        if not bar:
+                            self.events.put(bar)
                         self.strategy.calculate_signals(event)
                         self.book.update_book(event)
                         self.execution.mock_market_price(event)
+                    elif event.type == 'BAR':
+                        self.strategy.new_bar(event)
                     elif event.type == 'SIGNAL':
                         self.order.execute_signal(event)
                     elif event.type == 'ORDER':
