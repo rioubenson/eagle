@@ -11,7 +11,8 @@ import numpy as np
 import pandas as pd
 
 import settings
-from event.event import TickEvent
+from common.bars import ticks_to_candle
+from event.event import TickEvent, BarEvent
 
 
 class PriceHandler(object):
@@ -42,17 +43,17 @@ class PriceHandler(object):
         be more robust and straightforward to follow.
         """
         prices_dict = dict(
-            (k, v) for k,v in [
+            (k, v) for k, v in [
                 (p, {"bid": None, "ask": None, "time": None}) for p in self.pairs
-            ]
+                ]
         )
         inv_prices_dict = dict(
-            (k, v) for k,v in [
+            (k, v) for k, v in [
                 (
-                    "%s%s" % (p[3:], p[:3]), 
+                    "%s%s" % (p[3:], p[:3]),
                     {"bid": None, "ask": None, "time": None}
                 ) for p in self.pairs
-            ]
+                ]
         )
         prices_dict.update(inv_prices_dict)
         return prices_dict
@@ -65,10 +66,10 @@ class PriceHandler(object):
         """
         getcontext().rounding = ROUND_HALF_DOWN
         inv_pair = "%s%s" % (pair[3:], pair[:3])
-        inv_bid = (Decimal("1.0")/bid).quantize(
+        inv_bid = (Decimal("1.0") / bid).quantize(
             Decimal("0.00001")
         )
-        inv_ask = (Decimal("1.0")/ask).quantize(
+        inv_ask = (Decimal("1.0") / ask).quantize(
             Decimal("0.00001")
         )
         return inv_pair, inv_bid, inv_ask
@@ -147,7 +148,7 @@ class HistoricCSVPriceHandler(PriceHandler):
 
     def _update_csv_for_day(self):
         try:
-            dt = self.file_dates[self.cur_date_idx+1]
+            dt = self.file_dates[self.cur_date_idx + 1]
         except IndexError:  # End of file dates
             return False
         else:
@@ -173,10 +174,10 @@ class HistoricCSVPriceHandler(PriceHandler):
             # End of the current days data
             if self._update_csv_for_day():
                 index, row = next(self.cur_date_pairs)
-            else: # End of the data
+            else:  # End of the data
                 self.continue_backtest = False
                 return
-        
+
         getcontext().rounding = ROUND_HALF_DOWN
         pair = row["Pair"]
         bid = Decimal(str(row["Bid"])).quantize(
@@ -200,3 +201,42 @@ class HistoricCSVPriceHandler(PriceHandler):
         # Create the tick event for the queue
         tev = TickEvent(pair, index, bid, ask)
         self.events_queue.put(tev)
+
+
+class BarGenerator(object):
+    first_tick_time = None
+    ticks = pd.DataFrame()
+    recent_bar = None
+    bars = pd.DataFrame()
+    no_of_bars = 0
+
+    def __init__(self, duration='1min', type='Mid'):
+        self.duration = duration
+        self.type = type
+
+    def add_tick(self, tick):
+        """Adds a tick to the generator.  If this has produced a new bar, then
+        it returns it, otherwise None"""
+        # First Tick?
+        if self.first_tick_time is None:
+            self.first_tick_time = tick.time
+        x = {'Instrument': [tick.instrument],
+             'Time': [tick.time],
+             'Bid': [float(tick.bid)],
+             'Ask': [float(tick.ask)],
+             'Mid': [float(tick.mid)]}
+        tick_df = pd.DataFrame(x)
+        tick_df = tick_df.set_index(pd.DatetimeIndex(tick_df['Time']))
+        del tick_df['Time']
+        self.ticks = self.ticks.append(tick_df)
+
+        if (tick.time - self.first_tick_time).total_seconds() >= 60:
+            candle = ticks_to_candle(self.ticks, self.duration, type=self.type)
+            self.bars = candle
+            self.first_tick_time = None
+            if len(self.bars) > self.no_of_bars:
+                bar_row = self.bars[-1:]
+                bar = BarEvent(tick.instrument, bar_row.index, self.duration, bar_row['open'], bar_row['close'],
+                               bar_row['high'], bar_row['low'], 0)
+            return bar
+        return None

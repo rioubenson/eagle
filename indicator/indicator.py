@@ -29,8 +29,8 @@ def MOM(df, n):
 # Rate of Change
 def ROC(df, n):
     df.reset_index(inplace=True)
-    M = df['Close'].diff(n - 1)
-    N = df['Close'].shift(n - 1)
+    M = df['close'].diff(n - 1)
+    N = df['close'].shift(n - 1)
     ROC = pd.Series(M / N, name='ROC_' + str(n))
     df = df.join(ROC)
     return df.set_index('Time')
@@ -411,6 +411,12 @@ def DONCH(df, n):
 # Standard Deviation
 def STDDEV(df, n):
     df = df.join(pd.Series(pd.rolling_std(df['Close'], n), name='STD_' + str(n)))
+    return df
+
+
+# William's Vix Fix
+def WVF(df, n=22):
+    df['wvf'] = ((pd.rolling_max(df['close'], n) - df['low']) / pd.rolling_max(df['close'], n)) * 100
     return df
 
 

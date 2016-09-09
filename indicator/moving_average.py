@@ -9,3 +9,4 @@ def simple_moving_average(values, timeframe, normalise=False):
     else:
         result = pd.rolling_mean(values, timeframe, min_periods=1)
     return result
+

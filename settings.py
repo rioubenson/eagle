@@ -15,8 +15,8 @@ ENVIRONMENTS = {
     }
 }
 
-CSV_DATA_DIR = '/apps/homefs1/rbenson/eagle/EURUSD' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/'  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
-OUTPUT_RESULTS_DIR = '/apps/homefs1/rbenson/eagle/' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/' #os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
+CSV_DATA_DIR = "/apps/homefs1/rbenson/Documents/Eclipse/eagle/eagle/real_data/EURUSD"  #'C:/Users/Riou/PycharmProjects/eagle/real_data/EURUSD' #' / apps / homefs1 / rbenson / eagle / '  #'os.environ.get('EAGLE_CSV_DATA_DIR', None)
+OUTPUT_RESULTS_DIR ='/apps/homefs1/rbenson/eagle/' #'C:\Users\Riou\Eagle' #'/apps/homefs1/rbenson/eagle/' #os.environ.get('EAGLE_OUTPUT_RESULTS_DIR', None)
 OUTPUT_DIR = '/apps/homefs1/rbenson/eagle/'
 
 DOMAIN = "sandbox"
@@ -26,4 +26,4 @@ ACCESS_TOKEN = os.environ.get('OANDA_API_ACCESS_TOKEN', None)
 ACCOUNT_ID = os.environ.get('OANDA_API_ACCOUNT_ID', None)
 
 BASE_CURRENCY = "GBP"
-EQUITY = Decimal("1000000.00")
+EQUITY = Decimal("10000.00")
