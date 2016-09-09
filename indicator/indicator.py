@@ -2,8 +2,10 @@ import numpy
 import pandas as pd
 import math as m
 
-
 # Moving Average
+from common.maths import normalise_data
+
+
 def MA(df, n):
     MA = pd.Series(pd.rolling_mean(df['Close'], n), name='MA_' + str(n))
     df = df.join(MA)
@@ -427,3 +429,10 @@ def awesome_indicator(historic_bars, normalise=False):
         historic_bars['awesome_indicator'] = historic_bars['5_sma'] - historic_bars['34_sma']
     historic_bars.drop(['5_sma', '34_sma'], axis=1)
     return historic_bars
+
+
+# William's VIX FIX
+def WVF(df, n=22):
+    wvf = ((pd.rolling_max(df['Close'], n) - df['Low']) / pd.rolling_max(df['Close'], n)) * 100
+    df = df.join(wvf)
+    return df
