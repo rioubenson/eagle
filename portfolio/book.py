@@ -22,7 +22,7 @@ class Book(object):
     def __init__(
             self, ticker, home_currency="GBP",
             leverage=20, equity=Decimal("100000.00"),
-            risk_per_trade=Decimal("0.5"), backtest=False
+            risk_per_trade=Decimal("0.1"), backtest=False
     ):
         self.ticker = ticker
         self.home_currency = home_currency
