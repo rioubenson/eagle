@@ -44,6 +44,10 @@ class Book(object):
     def calc_risk_position_size(self):
         return self.equity * self.risk_per_trade
 
+    def get_unrealised_pnl(self, ticker):
+        return self.positions[ticker].calculate_profit()
+
+
     def add_new_position(
             self, instrument, units, price,
     ):
