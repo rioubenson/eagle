@@ -1,6 +1,8 @@
 from __future__ import print_function
 
 #from statistics.statistics import Statistics
+from datetime import datetime
+
 from data.price import BarGenerator
 from statistics.statistics import Statistics
 

@@ -1,14 +1,15 @@
+import logging
 import time
 
 from common.ticks import get_tick_size
-from event.event import SignalEvent
-import logging
+from event import SignalEvent
+from strategy.strategy_base import Strategy
 
 logger = logging.getLogger(__name__)
 
 
 def get_grid_spacing():
-    return 0.5
+    return 2
 
 
 class Grid(object):
@@ -90,7 +91,7 @@ class Grid(object):
         return str(self)
 
 
-class GridIron(object):
+class GridIron(Strategy):
     def __init__(self, instrument, events, ):
         self.instrument = instrument
         self.events = events
@@ -100,6 +101,8 @@ class GridIron(object):
         self.mode = 'AR'
         self.mode_changer = 0
 
+    def new_bar(self, event):
+        pass
 
     def calculate_signals(self, event):
         if event.type == 'TICK':
@@ -125,7 +128,7 @@ class GridIron(object):
         if self.grid.level_triggered == 0 and event.mid > self.grid.buy_level_one:
             signal = SignalEvent(event.instrument, "market", "sell", time.time())
             print "Opening position level 1 AR, mid %s" % event.mid
-            #self.events.put(signal)
+            self.events.put(signal)
             self.grid.shift_grid_ar(1)
 
         elif self.grid.level_triggered == 1 and event.mid > self.grid.buy_level_two:
@@ -148,7 +151,7 @@ class GridIron(object):
         # If the mid has crossed the first sell, then generate a signal
         elif self.grid.level_triggered == 0 and event.mid < self.grid.sell_level_one:
             signal = SignalEvent(event.instrument, "market", "buy", time.time())
-            #self.events.put(signal)
+            self.events.put(signal)
             print "Opening position level -1 AR, mid %s" % event.mid
             self.grid.shift_grid_ar(-1)
 

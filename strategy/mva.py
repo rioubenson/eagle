@@ -1,6 +1,6 @@
 import copy
 
-from event.event import SignalEvent
+from event import SignalEvent
 
 
 class MovingAverageCrossStrategy(object):

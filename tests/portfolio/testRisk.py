@@ -1,15 +1,13 @@
 import unittest
-import time
 
-from event.event import OrderEvent
-from portfolio.position import Position
+from event import OrderEvent
 
 try:
     import Queue as queue
 except ImportError:
     import queue
 from portfolio.book import Book, STOP, FLATTEN
-from manager.risk import RiskManager
+from risk import RiskManager
 
 
 class TestRiskManager(unittest.TestCase):

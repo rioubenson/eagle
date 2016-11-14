@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from abc import ABCMeta, abstractmethod
 
-from event.event import FillEvent
+from event import FillEvent
 
 try:
     import httplib

@@ -1,8 +1,8 @@
+import logging
 import time
 
 from common.ticks import get_tick_size
-from event.event import SignalEvent
-import logging
+from event import SignalEvent
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +68,8 @@ class GridLock(object):
         self.grid = None
         self.start_time = time.time()
 
+    def new_bar(self, event):
+        pass
     def calculate_signals(self, event):
         if event.type == 'TICK':
             # Firstly dont do any thing until after 8am

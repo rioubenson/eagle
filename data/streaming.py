@@ -1,13 +1,13 @@
 from __future__ import print_function
 
-from decimal import Decimal, getcontext, ROUND_HALF_DOWN
-import logging
 import json
+import logging
+from decimal import Decimal, getcontext, ROUND_HALF_DOWN
 
 import requests
 
-from event.event import TickEvent
 from data.price import PriceHandler
+from event import TickEvent
 
 
 class StreamingForexPrices(PriceHandler):
