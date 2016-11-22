@@ -22,7 +22,7 @@ class Book(object):
     def __init__(
             self, ticker, home_currency="GBP",
             leverage=20, equity=Decimal("100000.00"),
-            risk_per_trade=Decimal("0.1"), backtest=False
+            risk_per_trade=Decimal("0.001"), backtest=False
     ):
         self.ticker = ticker
         self.home_currency = home_currency
@@ -45,8 +45,12 @@ class Book(object):
         return self.equity * self.risk_per_trade
 
     def get_unrealised_pnl(self, ticker):
-        return self.positions[ticker].calculate_profit()
 
+        pos = self.positions.get(ticker, None)
+        if pos is None:
+            return 0
+        else:
+            return pos.calculate_profit()
 
     def add_new_position(
             self, instrument, units, price,

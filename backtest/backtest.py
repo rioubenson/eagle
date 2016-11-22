@@ -32,9 +32,6 @@ class Backtest(object):
         self.csv_dir = settings.CSV_DATA_DIR
         self.ticker = data_handler(self.pairs, self.events, self.csv_dir)
         #self.strategy_params = strategy_params
-        self.strategy = strategy(
-            self.pairs, self.events #, **self.strategy_params
-        )
         self.equity = equity
         self.heartbeat = heartbeat
         self.max_iters = max_iters
@@ -44,6 +41,9 @@ class Backtest(object):
         self.order = order(self.events, self.book)
         self.fill = fill(self.events, self.book)
         self.execution = execution()
+        self.strategy = strategy(
+            self.pairs, self.events, self.book  # , **self.strategy_params
+        )
 
     def _run_backtest(self):
         """

@@ -28,10 +28,9 @@ def MOM(df, n):
 
 # Rate of Change
 def ROC(df, n):
-    df.reset_index(inplace=True)
     M = df['close'].diff(n - 1)
     N = df['close'].shift(n - 1)
-    ROC = pd.Series(M / N, name='ROC_' + str(n))
+    ROC = pd.Series((M / N) * 100, name='ROC_' + str(n))
     df = df.join(ROC)
     return df.set_index('Time')
 

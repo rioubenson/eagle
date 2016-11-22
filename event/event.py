@@ -13,7 +13,7 @@ class TickEvent(Event):
 
     def __str__(self):
         return "Type: %s, Instrument: %s, Time: %s, Bid: %s, Ask: %s" % (
-            str(self.type), str(self.instrument), 
+            str(self.type), str(self.instrument),
             str(self.time), str(self.bid), str(self.ask)
         )
 
@@ -22,7 +22,7 @@ class TickEvent(Event):
 
 
 class BarEvent(Event):
-    def __init__(self, instrument, time, interval, open_mid,  close_mid, high_mid, low_mid, volume):
+    def __init__(self, instrument, time, interval, open_mid, close_mid, high_mid, low_mid, volume):
         self.type = 'BAR'
         self.time = time
         self.instrument = instrument
@@ -55,7 +55,7 @@ class SignalEvent(Event):
 
     def __str__(self):
         return "Type: %s, Instrument: %s, Order Type: %s, Side: %s" % (
-            str(self.type), str(self.instrument), 
+            str(self.type), str(self.instrument),
             str(self.order_type), str(self.side)
         )
 
@@ -94,10 +94,10 @@ class FillEvent(Event):
     """
 
     def __init__(
-        self, timestamp, instrument,
-        side, units,
-        exchange, price,
-        commission
+            self, timestamp, instrument,
+            side, units,
+            exchange, price,
+            commission
     ):
         """
         Initialises the FillEvent object.
@@ -123,6 +123,24 @@ class FillEvent(Event):
             str(self.type), str(self.instrument), str(self.units),
             str(self.price), str(self.side)
         )
+
+    def __repr__(self):
+        return str(self)
+
+
+class Trade(Event):
+    def __init__(self, instrument, time, side, units, price, pnl):
+        self.instrument = instrument
+        self.time = time
+        self.side = side
+        self.units = units
+        self.price = price
+        self.pnl = pnl
+
+    def __str__(self):
+        return "%s, %s %s, %s, %s, %s" % (
+            str(self.time), str(self.instrument), str(self.side),
+            str(self.units), str(self.price), str(self.pnl))
 
     def __repr__(self):
         return str(self)
