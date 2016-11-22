@@ -1,12 +1,12 @@
-import unittest
 import time
+import unittest
 
 try:
     import Queue as queue
 except ImportError:
     import queue
 
-from event.event import TickEvent
+from event import TickEvent
 from strategy.gridiron import GridIron
 
 

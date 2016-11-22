@@ -1,11 +1,11 @@
+import logging
 import time
 
-from common.ticks import get_tick_size
-from event.event import SignalEvent
-import logging
 import pandas as pd
 
 from indicator.indicator import ROC
+from common.ticks import get_tick_size
+from event import SignalEvent
 from strategy.strategy_base import Strategy
 
 
@@ -120,7 +120,7 @@ class GridIron(Strategy):
                         self.grid.start_grid(event.mid)
                 else:
                     self.work_grid(event)
-            if event.time.hour > 20:
+            if event.time.hour >= 20:
                 if self.grid is not None and self.grid.level_triggered != 0:
                     signal = SignalEvent(event.instrument, "market", "close_all", time.time())
                     self.events.put(signal)
@@ -154,14 +154,14 @@ class GridIron(Strategy):
 
         # LEVEL TWO
         elif self.grid.level_triggered == 1 and event.mid > self.grid.buy_level_two:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.5)
+            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.25)
             self.events.put(signal)
             self.logger.info("Opening position level 2 TREND, mid %s" % event.mid)
             self.grid.shift_grid(1)
 
         # LEVEL THREE
         elif self.grid.level_triggered == 2 and event.mid > self.grid.buy_level_three:
-            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.25)
+            signal = SignalEvent(event.instrument, "market", "buy", time.time(), units_multiplier=0.1)
             self.events.put(signal)
             self.logger.info("Opening position level 3 TREND, mid %s" % event.mid)
             self.grid.shift_grid(1)
@@ -195,13 +195,13 @@ class GridIron(Strategy):
             self.grid.shift_grid(-1)
         # LEVEL TWO
         elif self.grid.level_triggered == -1 and event.mid < self.grid.sell_level_two:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.5)
+            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.25)
             self.events.put(signal)
             self.logger.info("Opening position level -2 TREND, mid %s" % event.mid)
             self.grid.shift_grid(-1)
         # LEVEL THREE
         elif self.grid.level_triggered == -2 and event.mid < self.grid.sell_level_three:
-            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.25)
+            signal = SignalEvent(event.instrument, "market", "sell", time.time(), units_multiplier=0.1)
             self.events.put(signal)
             self.logger.info("Opening position level -3 TREND, mid %s" % event.mid)
             self.grid.shift_grid(-1)

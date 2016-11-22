@@ -1,15 +1,14 @@
 import logging
-
 import time
 
+import numpy as np
 import os
 import pandas as pd
-import numpy as np
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 from common.bars import ticks_to_candle
 from common.maths import normalise_data
-from event.event import SignalEvent
+from event import SignalEvent
 from settings import CSV_DATA_DIR
 
 logger = logging.getLogger(__name__)

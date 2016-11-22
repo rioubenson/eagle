@@ -26,7 +26,7 @@ ACCESS_TOKEN = os.environ.get('OANDA_API_ACCESS_TOKEN', None)
 ACCOUNT_ID = os.environ.get('OANDA_API_ACCOUNT_ID', None)
 
 BASE_CURRENCY = "GBP"
-EQUITY = Decimal("10000.00")
+EQUITY = Decimal("1000000.00")
 
 
 TRADING_PARAMETERS = {
@@ -34,7 +34,11 @@ TRADING_PARAMETERS = {
         "EURUSD": {
             'equity': 0.1,
             'grid_spacing': 2,
-            }
+            },
+        "BRENTX": {
+            'equity': 0.001,
+            'grid_spacing': 20,
+        }
     }
 
 }

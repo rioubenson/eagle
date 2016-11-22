@@ -23,6 +23,7 @@ class Book(object):
             self, ticker, home_currency="GBP",
             leverage=20, equity=Decimal("100000.00"),
             risk_per_trade=Decimal("0.001"), backtest=False
+
     ):
         self.ticker = ticker
         self.home_currency = home_currency
@@ -165,6 +166,6 @@ class Book(object):
             self.start_time = time.time()
 
     def get_limits_for_book(self):
-        return {'order_size': 150000,
-                'position_size': 400000,
-                'pnl_limit': -10000}
+        return {'order_size': 150000000,
+                'position_size': 400000000,
+                'pnl_limit': -10000000}

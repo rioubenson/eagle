@@ -1,18 +1,15 @@
 from __future__ import print_function
 
-import datetime
 from decimal import Decimal, getcontext, ROUND_HALF_DOWN
+
 import os
 import os.path
-import re
-import time
-
-import numpy as np
 import pandas as pd
+import re
 
 import settings
 from common.bars import ticks_to_candle
-from event.event import TickEvent, BarEvent
+from event import TickEvent, BarEvent
 
 
 class PriceHandler(object):

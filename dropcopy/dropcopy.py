@@ -1,14 +1,13 @@
 from __future__ import print_function
 
-from abc import abstractmethod
-from decimal import Decimal, getcontext, ROUND_HALF_DOWN
-import logging
 import json
+import logging
 
 import requests
+from abc import abstractmethod
 
-from event.event import TickEvent, FillEvent
-from data.price import PriceHandler
+from event import FillEvent
+
 
 class DropcopyHandler(object):
     """

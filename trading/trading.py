@@ -1,11 +1,9 @@
-import copy
-from decimal import Decimal, getcontext
-import logging
 import logging.config
+from decimal import getcontext
 
 from dropcopy.dropcopy import OANDAStreamingDropcopy
-from manager.order import OrderManager
-from manager.fill import FillManager
+from fill import FillManager
+from order import OrderManager
 from strategy.mustang import Mustang
 
 try:
@@ -18,7 +16,6 @@ import time
 from execution.execution import OANDAExecutionHandler
 from portfolio.book import Book
 import settings
-from strategy.gridiron import GridIron
 from data.streaming import StreamingForexPrices
 
 
