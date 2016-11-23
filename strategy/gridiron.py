@@ -10,7 +10,7 @@ from strategy.strategy_base import Strategy
 
 
 def get_grid_spacing():
-    return 20
+    return 2
 
 
 class Grid(object):
@@ -27,6 +27,7 @@ class Grid(object):
         self.stop_loss_sell = 0
         self.level_triggered = 0
         self.next_marker = 0
+        self.prev_mid = 0
 
     def start_grid(self, mid_point):
         self.grid_mid = float(mid_point)
@@ -57,6 +58,13 @@ class Grid(object):
             if shift_marker:
                 self.sell_next_marker -= (tick_size * (get_grid_spacing() * 2))
 
+    def update_grid(self, new_mid):
+        if self.level_triggered > 0:
+            # if long, shift stop loss up
+            self.stop_loss_buy += float(new_mid) - float(self.prev_mid)
+        elif  self.level_triggered < 0:
+            self.stop_loss_buy -= float(self.prev_mid) - float(new_mid)
+
     def __str__(self):
         return "\n**************************************************************\n \
 Current grid, mid: %s, buy1: %s, buy2: %s, TP: %s, SL: %s, sell1: %s, sell2: %s, TP: %s, SL: %s, LT: %s\n \
@@ -69,11 +77,11 @@ Current grid, mid: %s, buy1: %s, buy2: %s, TP: %s, SL: %s, sell1: %s, sell2: %s,
         return str(self)
 
 
-ROC_MARKER = 0.1
+ROC_MARKER = 0.0
 
 
 class GridIron(Strategy):
-    def __init__(self, instrument, events, book):
+    def __init__(self, instrument, events):
         self.instrument = instrument
         self.events = events
         self.ticks = 0
@@ -82,37 +90,13 @@ class GridIron(Strategy):
         self.bars = pd.DataFrame()
         self.logger = logging.getLogger(__name__)
         self.current_roc = 0
-        self.trading_mode = 'WAIT'
+        self.trading_mode = 'TRADE'
         self.roc_at_open = 0
-        self.book = book
 
     def calculate_signals(self, event):
         if event.type == 'TICK':
-            # Check whether ROC is > 0.2
-            self.current_roc = 0
-            if not self.bars.empty:
-                roc_df = ROC(self.bars, 9)
-                roc = roc_df.tail(1)
-                self.current_roc = roc['ROC_9'].sum()
-                if abs(self.current_roc) > ROC_MARKER and self.trading_mode == 'WAIT':
-                    self.logger.info("Creating Trade Signal - ROC: %s" % roc['ROC_9'])
-                    self.trading_mode = 'TRADE'
-                elif abs(self.current_roc) < ROC_MARKER and self.trading_mode == 'TRADE' and \
-                        (self.grid is None or self.grid.level_triggered == 0):
-                    # Haven't triggered a position, so close grid
-                    self.logger.info("Have not triggered grid and ROC is low, stopping trade mode")
-                    self.trading_mode = 'WAIT'
-                    self.grid = None
-                # Intelligent closing if profitable
-                elif not self.grid is None and abs(self.current_roc) < ROC_MARKER:
-                    if self.grid.level_triggered != 0 and self.book.get_unrealised_pnl(self.instrument[0]) > 6:
-                        signal = SignalEvent(event.instrument, "market", "close_all", time.time())
-                        self.events.put(signal)
-                        self.logger.info("ROC low, accept the profit")
-                        self.grid = None
-
             # Firstly dont do any thing until after 8am
-            if 1 <= int(event.time.hour) <= 20:
+            if 1 <= int(event.time.hour) < 20:
                 if self.grid is None:
                     # Set up a grid
                     if self.trading_mode == 'TRADE':
@@ -120,6 +104,8 @@ class GridIron(Strategy):
                         self.grid.start_grid(event.mid)
                 else:
                     self.work_grid(event)
+                    if not self.grid is None:
+                        self.grid.prev_mid = event.mid
             if event.time.hour >= 20:
                 if self.grid is not None and self.grid.level_triggered != 0:
                     signal = SignalEvent(event.instrument, "market", "close_all", time.time())
@@ -140,7 +126,6 @@ class GridIron(Strategy):
 
     def work_grid(self, event):
         # If the mid has crossed the first buy, then generate a signal
-
         ##############################################################
         # LONG POSITION                                              #
         ##############################################################
@@ -181,7 +166,10 @@ class GridIron(Strategy):
             else:
                 self.logger.info("Closing all buys at stop loss, mid %s" % event.mid)
             self.grid = None  # Done with this grid.
-            self.trading_mode = 'WAIT'
+            self.trading_mode = 'TRADE'
+        elif self.grid.level_triggered > 1 and event.mid > self.grid.prev_mid:
+            # We are long and the price ticked up
+            self.grid.update_grid(event.mid)
         ##############################################################
         # SHORT POSITION                                             #
         ##############################################################
@@ -216,7 +204,12 @@ class GridIron(Strategy):
             self.events.put(signal)
             self.logger.info("Closing all sells stop loss, mid %s" % event.mid)
             self.grid = None  # Done with this grid.
-            self.trading_mode = 'WAIT'
+            self.trading_mode = 'TRADE'
+        elif self.grid.level_triggered < -1 and event.mid < self.grid.prev_mid:
+            # We are short and the price ticked up
+            self.grid.update_grid(event.mid)
+
+
 
         # LOG THE GRID FOR INFO Purposes
         if time.time() - self.start_time > 2:

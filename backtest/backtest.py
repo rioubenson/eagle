@@ -44,7 +44,7 @@ class Backtest(object):
         self.fill = fill(self.events, self.book)
         self.execution = execution()
         self.strategy = strategy(
-            self.pairs, self.events, self.book  # , **self.strategy_params
+            self.pairs, self.events  # , **self.strategy_params
         )
 
     def _run_backtest(self):

@@ -20,12 +20,12 @@ logger = logging.getLogger('eagle.trading.trading')
 
 if __name__ == "__main__":
     # Trade on GBP/USD and EUR/USD
-    pairs = ["BRENTX"]
+    pairs = ["EURUSD"]
 
     # Create and execute the backtest
     backtest = Backtest(
         pairs, HistoricCSVPriceHandler,
-        GridLock,
+        GridIron,
         Book, OrderManager, SimulatedExecution, FillManager,
         equity=settings.EQUITY
     )
