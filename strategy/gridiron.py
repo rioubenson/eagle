@@ -10,7 +10,7 @@ from strategy.strategy_base import Strategy
 
 
 def get_grid_spacing():
-    return 2
+    return 3
 
 
 class Grid(object):
@@ -64,7 +64,6 @@ class Grid(object):
             self.stop_loss_buy += float(new_mid) - float(self.prev_mid)
         elif  self.level_triggered < 0:
             self.stop_loss_buy -= float(self.prev_mid) - float(new_mid)
-
     def __str__(self):
         return "\n**************************************************************\n \
 Current grid, mid: %s, buy1: %s, buy2: %s, TP: %s, SL: %s, sell1: %s, sell2: %s, TP: %s, SL: %s, LT: %s\n \
@@ -84,7 +83,7 @@ class GridIron(Strategy):
     def __init__(self, instrument, events):
         self.instrument = instrument
         self.events = events
-        self.ticks = 0
+        self.prev_ticks = pd.DataFrame()
         self.grid = None
         self.start_time = time.time()
         self.bars = pd.DataFrame()
@@ -93,9 +92,12 @@ class GridIron(Strategy):
         self.trading_mode = 'TRADE'
         self.roc_at_open = 0
 
+
     def calculate_signals(self, event):
         if event.type == 'TICK':
             # Firstly dont do any thing until after 8am
+
+
             if 1 <= int(event.time.hour) < 20:
                 if self.grid is None:
                     # Set up a grid

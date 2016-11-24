@@ -1,10 +1,9 @@
 from __future__ import print_function
 
-#from statistics.statistics import Statistics
 from datetime import datetime
 
 from data.price import BarGenerator
-from statistics.statistics import Statistics
+
 
 try:
     import Queue as queue
@@ -22,7 +21,7 @@ class Backtest(object):
     """
     def __init__(
         self, pairs, data_handler, strategy, 
-        book, order, execution, fill,
+        book, order, execution, fill, statistics,
         equity=100000.0, heartbeat=0.0001,
         max_iters=10000000000
     ):
@@ -33,6 +32,7 @@ class Backtest(object):
         self.events = queue.Queue()
         self.csv_dir = settings.CSV_DATA_DIR
         self.ticker = data_handler(self.pairs, self.events, self.csv_dir)
+
         #self.strategy_params = strategy_params
         self.equity = equity
         self.heartbeat = heartbeat
@@ -42,10 +42,13 @@ class Backtest(object):
         )
         self.order = order(self.events, self.book)
         self.fill = fill(self.events, self.book)
+        self.statistics = statistics(self.book)
         self.execution = execution()
         self.strategy = strategy(
             self.pairs, self.events  # , **self.strategy_params
         )
+
+
 
     def _run_backtest(self):
         """
@@ -75,6 +78,7 @@ class Backtest(object):
                         self.strategy.calculate_signals(event)
                         self.book.update_book(event)
                         self.execution.mock_market_price(event)
+                        self.statistics.update(event.time, self.book)
                     elif event.type == 'BAR':
                         self.strategy.new_bar(event)
                     elif event.type == 'SIGNAL':
@@ -99,8 +103,12 @@ class Backtest(object):
         Simulates the backtest and outputs portfolio performance.
         """
         self._run_backtest()
-        self._output_performance()
+        results = self.statistics.get_results()
+        print("---------------------------------")
         print("Backtest complete.")
-        #statistics = Statistics()
-        #statistics.generate_results()
-        #statistics.plot_results()
+        print("Sharpe Ratio: %s" % results["sharpe"])
+        print("Max Drawdown: %s" % results["max_drawdown"])
+        print("Max Drawdown Pct: %s" % results["max_drawdown_pct"])
+        if not testing:
+            self.statistics.plot_results()
+        return results

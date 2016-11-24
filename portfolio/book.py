@@ -30,7 +30,7 @@ class Book(object):
         self.leverage = leverage
         self.equity = equity
         self.balance = deepcopy(self.equity)
-        self.pnl = 0
+        self.realised_pnl = 0
         self.risk_per_trade = risk_per_trade
         self.backtest = backtest
         self.trade_units = self.calc_risk_position_size()
@@ -45,13 +45,15 @@ class Book(object):
     def calc_risk_position_size(self):
         return self.equity * self.risk_per_trade
 
-    def get_unrealised_pnl(self, ticker):
-
-        pos = self.positions.get(ticker, None)
-        if pos is None:
-            return 0
-        else:
-            return pos.calculate_profit()
+    def get_unrealised_pnl(self):
+        pnl = 0
+        for ticker in self.positions:
+            pos = self.positions.get(ticker, None)
+            if pos is None:
+                pnl += 0
+            else:
+              pnl += pos.calculate_profit()
+        return pnl
 
     def add_new_position(
             self, instrument, units, price,
@@ -82,6 +84,7 @@ class Book(object):
                     self.close_position(instrument, price)
                 else:
                     pnl = ps.remove_units(units, price)
+                    self.realised_pnl += pnl
                     self.balance += pnl
                 return True
             elif units < 0 < ps.units:
@@ -89,6 +92,7 @@ class Book(object):
                     self.close_position(instrument, price)
                 else:
                     pnl = ps.remove_units(units, price)
+                    self.realised_pnl += pnl
                     self.balance += pnl
                 return True
             else:
@@ -101,6 +105,7 @@ class Book(object):
         else:
             ps = self.positions[instrument]
             pnl = ps.close_position(price)
+            self.realised_pnl += pnl
             self.balance += pnl
             print('Closing Position %s, %s' % (str(pnl), str(self.balance)))
             del [self.positions[instrument]]
@@ -151,8 +156,10 @@ class Book(object):
         if instrument in self.positions:
             ps = self.positions[instrument]
             ps.update_curr_price(tick_event.mid)
+        self.equity = self.balance + self.get_unrealised_pnl()
+
         if time.time() - self.start_time > 2:
-            out_line = "%s, Balance: %s" % (tick_event.time, self.balance)
+            out_line = "%s, Balance: %s, Equity: %s" % (tick_event.time, self.balance, self.equity)
             for pair in self.ticker.pairs:
                 if pair in self.positions:
                     out_line += ", Current Profit: %s, Units %s" % (self.positions[pair].calculate_profit(),

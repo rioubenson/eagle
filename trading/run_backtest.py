@@ -8,6 +8,7 @@ import settings
 from backtest.backtest import Backtest
 from data.price import HistoricCSVPriceHandler
 from execution.execution import SimulatedExecution
+from statistics.simple import SimpleStatistics
 from fill import FillManager
 from order import OrderManager
 from portfolio.book import Book
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     backtest = Backtest(
         pairs, HistoricCSVPriceHandler,
         GridIron,
-        Book, OrderManager, SimulatedExecution, FillManager,
+        Book, OrderManager, SimulatedExecution, FillManager, SimpleStatistics,
         equity=settings.EQUITY
     )
     backtest.simulate_trading()

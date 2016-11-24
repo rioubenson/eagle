@@ -41,7 +41,7 @@ class RiskManager(object):
         # TODO MinMax check - for passive orders
 
         # PnL
-        if self.book.pnl < self.book.limits['pnl_limit']:
+        if self.book.realised_pnl < self.book.limits['pnl_limit']:
             self.logger.info(
                 "PnL Limit Breached, limit %s, attempted %s" % (order.units,
                                                                 self.book.limits['pnl_limit']))
